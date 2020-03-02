@@ -47,7 +47,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-NSString *const SentryClientVersionString = @"4.4.3";
+NSString *const SentryClientVersionString = @"4.4.4";
 NSString *const SentryClientSdkName = @"sentry-cocoa";
 
 static SentryClient *sharedClient = nil;
@@ -81,6 +81,9 @@ static SentryInstallation *installation = nil;
 - (_Nullable instancetype)initWithOptions:(NSDictionary<NSString *, id> *)options
                          didFailWithError:(NSError *_Nullable *_Nullable)error {
     NSURLSessionConfiguration *configuration = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    if (@available(iOS 11.0, *)) {
+        configuration.multipathServiceType = NSURLSessionMultipathServiceTypeInteractive;
+    }
     NSURLSession *session = [NSURLSession sessionWithConfiguration:configuration];
     return [self initWithOptions:options
                   requestManager:[[SentryQueueableRequestManager alloc] initWithSession:session]
